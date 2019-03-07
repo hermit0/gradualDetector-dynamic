@@ -37,7 +37,7 @@ def test(data_loader, model, opt):
             prob_e = outputs[2]
             pred_s = prob_s.gt(0.5) #当概率大于0.5时，即判断为正样本
             pred_mid = prob_mid.gt(0.5)
-            pred_e = pred_s.gt(0.t)
+            pred_e = pred_s.gt(0.5)
         for j in range(prob_s.size(0)):
             video_name = os.path.basename(targets['video_path'][j])
             frame_no = targets['frame_no'][j].item()

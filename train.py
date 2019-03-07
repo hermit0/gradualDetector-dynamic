@@ -23,36 +23,39 @@ def train_epoch(epoch, data_loader, model, criterion, optimizer, opt,
     for i, (inputs, targets) in enumerate(data_loader):
         data_time.update(time.time() - end_time)
         
-        print('debuging')
-        print(type(targets))
-        print(targets)
         
         if not opt.no_cuda:
-            targets = targets.cuda(async=True)
             inputs = inputs.cuda()
         inputs = Variable(inputs)
-        targets = Variable(targets)
         
         outputs = model(inputs) #y为长度为3的list
-        
+        #print(outputs)
         #将target划分成不同类别
-        target_list=target.chunk(targets.size()[1],dim=1)
-        assert targets.size()[1] == 3
-        loss0 = criterion(outputs[0],target_list[0])
-        loss1 = criterion(outputs[1],target_list[1])
-        loss2 = criterion(outputs[2],target_list[2])
+        assert len(targets) == 3
+        for i in range(len(targets)):
+            targets[i] =targets[i].to(dtype=torch.float)
+            targets[i] = targets[i].view(-1,1)
+            if not opt.no_cuda:
+                targets[i]=targets[i].cuda(async=True)
+            targets[i]=Variable(targets[i])
+        #print(targets)
+        loss0 = criterion(outputs[0],targets[0])
+        #print(loss0)
+        loss1 = criterion(outputs[1],targets[1])
+        #print(loss1)
+        loss2 = criterion(outputs[2],targets[2])
+        #print(loss2)
         loss = loss0+loss1+loss2
+        #print(loss)
         losses.update(loss.item(), inputs.size(0))
         
-        pdb.set_trace()
-        print('debuging train_epoch accuracy')
-        start_acc = calculate_accuracy(outputs[0], targets)
+        #print('debuging train_epoch accuracy')
+        start_acc = calculate_accuracy(outputs[0], targets[0])
         start_accuracies.update(start_acc,inputs.size(0))
-        mid_acc = calculate_accuracy(outputs[1], targets)
+        mid_acc = calculate_accuracy(outputs[1], targets[1])
         mid_accuracies.update(mid_acc,inputs.size(0))
-        end_acc = calculate_accuracy(outputs[2], targets)
+        end_acc = calculate_accuracy(outputs[2], targets[2])
         end_accuracies.update(end_acc,inputs.size(0))
-        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

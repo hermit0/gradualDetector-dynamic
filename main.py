@@ -88,7 +88,7 @@ if __name__ == '__main__':
         train_loader = torch.utils.data.DataLoader(
             training_data,
             batch_size=opt.batch_size,
-            shuffle=True,
+            #shuffle=True,
             num_workers=opt.n_threads,
             pin_memory=True)                
         train_logger = Logger(

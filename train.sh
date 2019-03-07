@@ -1,9 +1,9 @@
-log_dir=results_talnn
+log_dir=results_temp
 
 #从头开始训练模型或者从最近的检查点恢复训练
 nohup python -u  main.py \
---root_dir ~/CodeOnGoogleGPU/shotTransitions/gradualDetector/data \
---train_list_path train_samples_c1 \
+--root_dir ~/gradualDetector/data \
+--train_list_path temp_list \
 --result_path $log_dir \
 --sample_size 112 \
 --sample_duration 21 \

@@ -1,4 +1,5 @@
 import csv
+import torch
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -42,10 +43,10 @@ class Logger(object):
         
 def calculate_accuracy(outputs, targets):
     batch_size = targets.size(0)
-
+    targets = targets.clone().to(dtype=torch.uint8)
     pred = outputs.gt(0.5)
     pred = pred.t()
     correct = pred.eq(targets.view(1, -1))
     n_correct_elems = correct.float().sum().item()
-
+    print('batch_size:{} n_correct_elems:{}'.format(batch_size,n_correct_elems))
     return n_correct_elems / batch_size

@@ -9,7 +9,7 @@ def generate_model(opt):
         'talnn'
     ]
     if opt.model == 'talnn':
-        from model.talnn import get_fine_tuning_parameters
+        from models.talnn import get_fine_tuning_parameters
         model = talnn.TALNN(
                     sample_size=opt.sample_size,
                     sample_duration=opt.sample_duration)
@@ -26,7 +26,7 @@ def generate_model(opt):
             
         parameters = get_fine_tuning_parameters(model, opt.ft_begin_index)
     else:
-        prameters = model.parameters()
+        parameters = model.parameters()
        
     return model,parameters
     
