@@ -37,11 +37,19 @@ def test(data_loader, model, opt):
             prob_e = outputs[2]
             pred_s = prob_s.gt(0.5) #当概率大于0.5时，即判断为正样本
             pred_mid = prob_mid.gt(0.5)
-            pred_e = pred_s.gt(0.5)
+            pred_e = prob_e.gt(0.5)
+            #print('outputs: ',outputs)
+            #print('prob_s {} prob_mid {} prob_e {} pred_s{} pred_mid{} pred_e {}'
+            #      .format(prob_s,prob_mid,prob_e,pred_s,pred_mid,pred_e))
+        #print(targets)
         for j in range(prob_s.size(0)):
             video_name = os.path.basename(targets['video_path'][j])
             frame_no = targets['frame_no'][j].item()
-            annotation = targets['label'][j]
+            annotation = (targets['label'][0][j],targets['label'][1][j],
+                          targets['label'][2][j])
+            #print(video_name)
+            #print(frame_no)
+            #print(annotation)
             assert len(annotation) == 3
             if annotation[0] != -3: #非无效groundtruth 标签
                 if annotation[0] == pred_s[j].item():
@@ -61,6 +69,7 @@ def test(data_loader, model, opt):
                     test_results[previous_video_name] = output_buffer
                     output_buffer = []
             output_buffer.append((frame_no,prob_s[j].item(),prob_mid[j].item(),prob_e[j].item()))
+            previous_video_name = video_name
         
         if (i % 100) == 0:
             with open(os.path.join(opt.result_path, 'predict.json'), 'w') as f:
