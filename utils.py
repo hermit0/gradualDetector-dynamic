@@ -48,5 +48,5 @@ def calculate_accuracy(outputs, targets):
     pred = pred.t()
     correct = pred.eq(targets.view(1, -1))
     n_correct_elems = correct.float().sum().item()
-    print('batch_size:{} n_correct_elems:{}'.format(batch_size,n_correct_elems))
+    #print('batch_size:{} n_correct_elems:{}'.format(batch_size,n_correct_elems))
     return n_correct_elems / batch_size
