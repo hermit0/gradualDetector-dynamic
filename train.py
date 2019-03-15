@@ -32,12 +32,12 @@ def train_epoch(epoch, data_loader, model, criterion, optimizer, opt,
         #print(outputs)
         #将target划分成不同类别
         assert len(targets) == 3
-        for i in range(len(targets)):
-            targets[i] =targets[i].to(dtype=torch.float)
-            targets[i] = targets[i].view(-1,1)
+        for j in range(len(targets)):
+            targets[j] =targets[j].to(dtype=torch.float)
+            targets[j] = targets[j].view(-1,1)
             if not opt.no_cuda:
-                targets[i]=targets[i].cuda(async=True)
-            targets[i]=Variable(targets[i])
+                targets[j]=targets[j].cuda(async=True)
+            targets[j]=Variable(targets[j])
         #print(targets)
         loss0 = criterion(outputs[0],targets[0])
         #print(loss0)
