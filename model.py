@@ -65,6 +65,7 @@ def generate_model(opt):
             resnet_depth = int(pretrain['arch'].split('-')[1])
             assert opt.model_depth == resnet_depth
             model.load_state_dict(pretrain['state_dict'],strict=False)
+            parameters = model.parameters()
         else:    
             assert opt.arch == pretrain['arch']
             
