@@ -13,6 +13,7 @@ from model import generate_model
 from spatial_transforms import (Compose,
     ToTensor,Normalize,Scale,CenterCrop,RandomHorizontalFlip,MultiScaleCornerCrop)
 from data.dataset import DataSet
+from data import generate_train_samples
 from utils import Logger
 from target_transforms import ClassLabel
 from train import train_epoch
