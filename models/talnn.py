@@ -78,6 +78,13 @@ class TALNN(nn.Module):
         self.head2 = Head(256,last_size,last_duration)
         self.head3 = Head(256,last_size,last_duration)
         
+        for m in self.modules():
+            if isinstance(m, nn.Conv3d):
+                m.weight = nn.init.kaiming_normal(m.weight, mode='fan_out')
+            elif isinstance(m, nn.BatchNorm3d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+    
     def forward(self,x):
         x = self.layer1(x)
         x = self.layer2(x)
