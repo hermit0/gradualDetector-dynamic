@@ -129,7 +129,7 @@ def core_process(annotation,samples_in,rate,skip_frames,out_file_path):
     
 
 '''
-从渐变[s,e]中采样m帧，必须采样s,e,mid=(s+e)/2这三帧，剩下的帧随机采样
+从渐变[s,e]中采样m帧，必须采样s,e这两帧，剩下的渐变中间帧随机采样
 '''
 def sample_from_gradual(s,e,total_sample):
     has_sampled = []
@@ -147,14 +147,13 @@ def sample_from_gradual(s,e,total_sample):
     
     has_sampled.append(s)
     has_sampled.append(e)
-    mid = int((s + e) / 2)
-    if total_sample >= 3:
-        has_sampled.append(mid)
-    if total_sample > 3:
-        remain = total_sample - 3
+    #mid = int((s + e) / 2)
+    #if total_sample >= 3:
+    #    has_sampled.append(mid)
+    if total_sample > 2:
+        remain = total_sample - 2
         for i in range(s+1,e):
-            if i != mid:
-                prob[i-s] = 1.0 / (gradual_len - 3)
+            prob[i-s] = 1.0 / (gradual_len - 2)
         for frame in random.choice(frame_nos,size=remain,p=prob,replace=False):
             has_sampled.append(frame)
     return has_sampled

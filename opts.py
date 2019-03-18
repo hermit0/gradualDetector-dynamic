@@ -12,6 +12,10 @@ def parse_opts():
         type=str,
         help='path of train samples list file')
     parser.add_argument(
+        '--train_gts_json_path',
+        type=str,
+        help='path of train dataset\'s groundtruth json file to generate train samples')
+    parser.add_argument(
         '--test_list_path',
         type=str,
         help='path of test samples list file')

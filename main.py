@@ -41,6 +41,8 @@ if __name__ == '__main__':
         opt.result_path = os.path.join(opt.root_dir, opt.result_path)
         if opt.train_list_path:
             opt.train_list_path = os.path.join(opt.root_dir,opt.train_list_path)
+        if opt.train_gts_json_path:
+            opt.train_gts_json_path  = os.path.join(opt.root_dir,opt.train_gts_json_path)
         if opt.test_list_path:
             opt.test_list_path = os.path.join(opt.root_dir,opt.test_list_path)
         if opt.resume_path:
@@ -81,16 +83,7 @@ if __name__ == '__main__':
         ])
         temporal_transform = None
         target_transform = ClassLabel()
-        training_data = DataSet(opt.train_subdir,opt.train_list_path,
-                                spatial_transform=spatial_transform,
-                                temporal_transform=temporal_transform,
-                                target_transform=target_transform, sample_duration=opt.sample_duration)
-        train_loader = torch.utils.data.DataLoader(
-            training_data,
-            batch_size=opt.batch_size,
-            #shuffle=True,
-            num_workers=opt.n_threads,
-            pin_memory=True)                
+                        
         train_logger = Logger(
             os.path.join(opt.result_path, 'train.log'),
             ['epoch', 'loss', 'label_s acc', 'label_mid acc','label_end acc','lr'])
@@ -123,6 +116,18 @@ if __name__ == '__main__':
     print('run')
     for i in range(opt.begin_epoch, opt.n_epochs + 1):
         if not opt.no_train:
+            #每次重新生成该周期的训练集文件,每个渐变采样4帧，渐变前后各采样1帧，跳过紧接着渐变的2帧
+            generate_train_samples.main(opt.train_gts_json_path,4,0.25,2,opt.train_list_path)
+            training_data = DataSet(opt.train_subdir,opt.train_list_path,
+                                spatial_transform=spatial_transform,
+                                temporal_transform=temporal_transform,
+                                target_transform=target_transform, sample_duration=opt.sample_duration)
+            train_loader = torch.utils.data.DataLoader(
+                                training_data,
+                                batch_size=opt.batch_size,
+                                shuffle=True,
+                                num_workers=opt.n_threads,
+                                pin_memory=True)
             step_scheduler.step()
             train_epoch(i, train_loader, model, criterion, optimizer, opt,
                         train_logger, train_batch_logger,step_scheduler)
