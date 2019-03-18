@@ -60,11 +60,17 @@ def generate_model(opt):
     if opt.pretrain_path:
         print('loading pretrained model {}'.format(opt.pretrain_path))
         pretrain = torch.load(opt.pretrain_path)
-        assert opt.arch == pretrain['arch']
+        if "resnet_talnn" in opt.arch and "resnet" in pretrain['arch']:
+            #可以用resnet的模型来初始化resnet_talnn
+            resnet_depth = int(pretrain['arch'].split('-')[1])
+            assert opt.model_depth == resnet_depth
+            model.load_state_dict(pretrain['state_dict'],strict=False)
+        else:    
+            assert opt.arch == pretrain['arch']
             
-        model.load_state_dict(pretrain['state_dict'])
+            model.load_state_dict(pretrain['state_dict'])
             
-        parameters = get_fine_tuning_parameters(model, opt.ft_begin_index)
+            parameters = get_fine_tuning_parameters(model, opt.ft_begin_index)
     else:
         parameters = model.parameters()
        
